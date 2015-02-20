@@ -1,0 +1,161 @@
+
+<style type="text/css">
+#logout{
+	margin-top: 20px;
+width: 100px;
+margin-left: auto;
+}
+#update{
+	width: 100px;
+}
+#edit{
+	width: 100px;
+}
+body{
+	margin-left: 150px;
+}
+</style>
+{% for det in data.result %}
+<h2>Welcome {{det.username}},</h2>
+<p class="set" style="color: crimson;">Your Details:</p>
+    <div class="main">
+      Email: <a id="newEmail">{{det.email}}</a> </br></br>
+	  Mobile: <a id="newMobile">{{det.mobile}}</a>  </br></br>
+	  Address: 	 <a id="newAddress">{{det.address}}</a>  </br></br>
+	  Info: 	<a id="newInfo">{{det.info}}</a>  </br></br> 
+	  City:   <a id="newCity">{{det.city}}</a>  </br></br>
+	  Sport: <a id="newSport">{{det.sport}}</a> </br></br>
+    </div>
+
+  
+    <div id="open" style="display:none">
+	<p>
+    <label for="city" id="city1">Change City:</label>
+    <select name="city" id="city">
+	<option value="{{det.city}}">{{det.city}}</option>
+	<option value="">-----</option>
+	<option value="mumbai" {{det.city}} >Mumbai</option>
+	<option value="jaipur" >Jaipur</option>
+	<option value="bangalore" >Bangalore</option>
+	<option value="hydrabad">Hydrabad</option>
+	<option value="delhi" >Delhi</option>
+	<option value="chennai" >Chennai</option>
+	<option value="pune">Pune</option>
+	<option value="lucknow" >Lucknow</option>
+	</select>
+   </p>
+   <p>
+  <label for="sport">Sport Pref:</label>
+    <select name="sport" id="sport">
+	<option value="">{{det.sport}}</option>
+	<option value="">-----</option>
+	<option value="cricket" >Cricket</option>
+	<option value="football" >Football</option>
+	<option value="hockey" >Hockey</option>
+	<option value="chess" >Chess</option>
+	<option value="basketball" >Basketball</option>
+	<option value="badminton" >Badminton</option>
+	<option value="tennis" >Tennis</option>
+	</select>
+  </p>
+  <p>
+  <label for="mobile">Mobile No: +91</label>
+  <input type="text" id="mobile" name="mobile" value="{{det.mobile}}" />
+  </p>
+  <p>
+  <label for="address">Address:</label>
+  <input type="text" id="address" name="address" value="{{det.address}}" />
+  </p>
+  <p>
+	<label for="info">About Yourself:</label>
+  <input type="text" id="info" style="width: 184px;height: 25px;" name="info" value="{{det.info}}"> </input>
+  </p>
+	</div>
+	<input type="submit" id="logout" value="Logout" />
+	<input type="submit" id="update" value="Update details" />
+	<input type="submit" id="edit" style="display:none;" value="Save" />
+	{% endfor %}
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		$("#logout").click(function(){
+			//window.location.assign("http://localhost/codeig/user/home");
+			$.ajax({
+					  url: 'http://localhost/codeig/django/logout',
+					  type: 'GET',
+					  success: function(result) {
+						  var url = "/codeig/django/logout";
+						  window.location.href = url;
+			  },
+			  error: function(e) {
+				  alert("Error");
+				alert(e.message);
+			  }
+		});
+			
+		});
+		$('#update').click(function(){
+			$('#open').css("display", "");
+			$('#edit').css("display", "");
+			$('#update').css("display", "none");
+			//$("#update").attr('value', 'Save');
+		});
+		
+		$('#edit').click(function(){
+			$('#edit').css("display", "none");
+			$('#update').css("display", "");
+			var isUpdate = false;
+			var e = document.getElementById("city");
+			var strCity = e.options[e.selectedIndex].text;
+			
+			var e = document.getElementById("sport");
+			var strSport = e.options[e.selectedIndex].text;
+			
+			var mobile = '';
+			if($('#mobile').val().length !=10){
+				alert("Please Enter valid mobile number:")
+				isUpdate = false;
+			}else{
+			mobile = $('#mobile').val();
+			isUpdate = true;
+			}
+			
+			var address = $('#address').val();
+			var info = $('#info').val();
+			
+			var id = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+		
+			  if(isUpdate){
+				var object = "id="+id+"&city="+strCity+"&sport="+strSport+"&mobile="+mobile+"&info="+info+"&address="+address;
+				
+					$.ajax({
+					  url: 'http://localhost/codeig/django/update',
+					  type: 'GET',
+					  data: object,
+					  success: function(result) {
+				
+					if(result == '1'){
+						$('#open').css("display", "none");
+						$('#edit').css("display", "none");
+						$("#newCity").html(strCity);
+						$("#newSport").html(strSport);
+						$("#newMobile").html(mobile);
+						$("#newAddress").html(address);
+						$("#newInfo").html(info);
+					}
+			  },
+			  error: function(e) {
+				alert(e.message);
+			  }
+		});
+			}
+			
+		});
+		
+	});
+</script>
+
