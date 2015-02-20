@@ -49,7 +49,7 @@ class User extends CI_Controller{
  }
  public function home()	
  {
-	 echo 'test commit';
+	 echo ' Jugal test commit';
 	 if($this->session->userdata("logged_in_user")){
 		 //Redirect to profile page
 		 $id = $this->session->userdata('logged_in_user');
